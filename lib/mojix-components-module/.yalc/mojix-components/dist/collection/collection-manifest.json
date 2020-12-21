@@ -1,0 +1,13 @@
+{
+  "entries": [
+    "./components/mojix-tag/mojix-tag.js"
+  ],
+  "compiler": {
+    "name": "@stencil/core",
+    "version": "2.3.0",
+    "typescriptVersion": "4.0.5"
+  },
+  "collections": [],
+  "bundles": [],
+  "global": "./globals/bootstrap.js"
+}

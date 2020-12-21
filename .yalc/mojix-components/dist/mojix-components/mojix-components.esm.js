@@ -1,0 +1,1 @@
+import{p as i,b as o}from"./p-4d1e3b43.js";import"./p-c7bfec58.js";(()=>{const o=import.meta.url,p={};return""!==o&&(p.resourcesUrl=new URL(".",o).href),i(p)})().then((i=>o([["p-a89c6e30",[[38,"mojix-tag",{icon:[1],link:[1],disable:[4]}]]]],i)));

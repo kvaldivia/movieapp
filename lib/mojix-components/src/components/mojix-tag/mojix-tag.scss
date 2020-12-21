@@ -1,0 +1,17 @@
+:host {
+  .container {
+    background-color: #E50914;
+    display: flex;
+    border-radius: 15px;
+    text-align: center !important;
+    width: max-content;
+
+    .text {
+      color: #FFF;
+    }
+
+    .icon {
+
+    }
+  }
+}
