@@ -1,0 +1,19 @@
+:host {
+  .container {
+    background-color: #E50914;
+    display: flex;
+    border-radius: 15px;
+    text-align: center !important;
+    width: max-content;
+    padding-left: 10px;
+    padding-right: 10px;
+
+    .text {
+      color: #FFF;
+    }
+
+    .icon {
+
+    }
+  }
+}
