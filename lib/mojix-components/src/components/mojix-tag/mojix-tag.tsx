@@ -3,9 +3,9 @@ import { Component, Host, h, Prop } from '@stencil/core';
 @Component({
   tag: 'mojix-tag',
   styleUrls: {
+    android: 'mojix-tag.android.scss',
     ios: 'mojix-tag.ios.scss',
-    md: 'mojix-tag.md.scss',
-    web: 'mojix-tag.web.scss'
+    web: 'mojix-tag.web.scss',
   },
   scoped: true,
 })
