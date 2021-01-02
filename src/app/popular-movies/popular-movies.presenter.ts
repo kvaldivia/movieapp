@@ -2,6 +2,7 @@ import { Injectable, Inject } from "@angular/core";
 import { LoadingController } from "@ionic/angular";
 
 import { Observable } from "rxjs";
+import { tap } from "rxjs/operators";
 
 import { MoviesRepository, MOVIES_REPOSITORY } from "../../data/repository/contracts/MoviesRepository";
 
@@ -27,12 +28,10 @@ export class PopularMoviesPresenter implements Presenter {
 
   async fetchMovies(): Promise<void> {
     const loader = await this.loadCtrl.create();
-    this.moviesRepo.getMovies().subscribe(
-      Observable.create((movies: Movie[]) => {
-        this.page.movies = movies;
-        console.log(movies);
-        loader.dismiss();
-      })
-    );
+    await loader.present();
+    this.moviesRepo.getMovies().toPromise().then((movies) => {
+      this.page.movies = movies;
+      loader.dismiss();
+    });
   }
 }

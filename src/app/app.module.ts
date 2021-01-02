@@ -10,8 +10,8 @@ import { ComponentLibraryModule } from 'mojix-components-module';
 
 import { MOVIES_REPOSITORY } from '../data/repository/contracts/MoviesRepository';
 import { MoviesRepositoryImpl } from '../data/repository/MoviesRepositoryImpl';
-import { InterceptorProvider } from '../net/interceptors/interceptor';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { InterceptorModule } from '../net/interceptors/interceptor.module';
+import { HttpClientModule } from '@angular/common/http';
 import { HTTP } from '@ionic-native/http/ngx';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -23,7 +23,8 @@ import { AppRoutingModule } from './app-routing.module';
     IonicModule.forRoot(),
     AppRoutingModule,
     ComponentLibraryModule,
-    HttpClientModule
+    HttpClientModule,
+    InterceptorModule
   ],
   bootstrap: [MyApp],
   entryComponents: [],
@@ -32,7 +33,6 @@ import { AppRoutingModule } from './app-routing.module';
     SplashScreen,
     HTTP,
     { provide: MOVIES_REPOSITORY, useClass: MoviesRepositoryImpl },
-    { provide: HTTP_INTERCEPTORS, useClass: InterceptorProvider, multi: true },
   ],
   exports: [
   ],
