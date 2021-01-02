@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Home</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ng-container *ngIf="movies.length > 0; then list; else empty">
+  </ng-container>
+  <ng-template #list>
+    <ion-list>
+      <ion-item *ngFor="let movie of movies">
+        <mojix-movie-card
+          [name]="movie.title"
+          [summary]="movie.overview"
+          [genres]="movie.genreIds"
+          [posterUrl]="movie.posterPath"
+        >
+        </mojix-movie-card>
+      </ion-item>
+    </ion-list>
+  </ng-template>
+  <ng-template #empty>
+    Omg no movies were found
+  </ng-template>
+</ion-content>

@@ -1,43 +1,38 @@
 import { NgModule, ErrorHandler, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
+import { IonicModule } from '@ionic/angular';
 import { MyApp } from './app.component';
 
-import { AboutPage } from '../pages/about/about';
-import { ContactPage } from '../pages/contact/contact';
-import { PopularPage } from '../pages/popular/popular';
-import { TabsPage } from '../pages/tabs/tabs';
-
-import { StatusBar } from '@ionic-native/status-bar';
-import { SplashScreen } from '@ionic-native/splash-screen';
+import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 
 import { ComponentLibraryModule } from 'mojix-components-module';
 
+import { MOVIES_REPOSITORY } from '../data/repository/contracts/MoviesRepository';
+import { MoviesRepositoryImpl } from '../data/repository/MoviesRepositoryImpl';
+import { InterceptorModule } from '../net/interceptors/interceptor.module';
+import { HttpClientModule } from '@angular/common/http';
+import { HTTP } from '@ionic-native/http/ngx';
+
+import { AppRoutingModule } from './app-routing.module';
+
 @NgModule({
-  declarations: [
-    MyApp,
-    AboutPage,
-    ContactPage,
-    PopularPage,
-    TabsPage,
-  ],
+  declarations: [MyApp],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp),
-    ComponentLibraryModule 
+    IonicModule.forRoot(),
+    AppRoutingModule,
+    ComponentLibraryModule,
+    HttpClientModule,
+    InterceptorModule
   ],
-  bootstrap: [IonicApp],
-  entryComponents: [
-    MyApp,
-    AboutPage,
-    ContactPage,
-    PopularPage,
-    TabsPage
-  ],
+  bootstrap: [MyApp],
+  entryComponents: [],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    HTTP,
+    { provide: MOVIES_REPOSITORY, useClass: MoviesRepositoryImpl },
   ],
   exports: [
   ],
