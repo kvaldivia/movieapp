@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable, from } from "rxjs";
-import { HttpClient, HttpResponse } from "@angular/common/http";
+import { HttpClient, HttpResponse, HttpParams } from "@angular/common/http";
 
 import { MoviesRepository } from "./contracts/MoviesRepository";
 import {
@@ -31,8 +31,9 @@ import { environment } from "../../environments/environment";
 export class MoviesRepositoryImpl implements MoviesRepository {
   constructor(private http: HttpClient) {}
 
-  getPopularMovies(): Observable<Movie[]> {
-    return this.http.get(GET_POPULAR_MOVIES_URL, {}).pipe(
+  getPopularMovies(pageNumber: number = 1): Observable<Movie[]> {
+    const httpParams = new HttpParams({ fromString: `page=${pageNumber}`});
+    return this.http.get(GET_POPULAR_MOVIES_URL, { params: httpParams}).pipe(
       map((data: MoviesResponseDto) => {
         const movies: Movie[] = data.results.map((elm) => {
           const movie = new Movie();
