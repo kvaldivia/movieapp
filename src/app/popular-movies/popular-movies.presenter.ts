@@ -4,7 +4,10 @@ import { LoadingController } from "@ionic/angular";
 import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
 
-import { MoviesRepository, MOVIES_REPOSITORY } from "../../data/repository/contracts/MoviesRepository";
+import {
+  MoviesRepository,
+  MOVIES_REPOSITORY,
+} from "../../data/repository/contracts/MoviesRepository";
 
 import { Presenter } from "../../base.presenter";
 import { PopularMoviesPage } from "./popular-movies.page";
@@ -30,9 +33,12 @@ export class PopularMoviesPresenter extends Presenter {
 
   async fetchMovies(): Promise<void> {
     await this.showLoading();
-    this.moviesRepo.getMovies().toPromise().then((movies) => {
-      this.page.movies = movies;
-      this.hideLoading();
-    });
+    this.moviesRepo
+      .getPopularMovies()
+      .toPromise()
+      .then((movies) => {
+        this.page.movies = movies;
+        this.hideLoading();
+      });
   }
 }

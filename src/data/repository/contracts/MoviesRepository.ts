@@ -1,11 +1,12 @@
 import { InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { Movie } from '../../../domain/entity/Movie';
+import { Movie, MovieGenre } from '../../../domain/entity';
 
 export interface MoviesRepository {
-  getMovies(): Observable<Movie[]>;
+  getPopularMovies(): Observable<Movie[]>;
   getMovieDetails(id: string): Observable<Movie>;
+  getMovieGenres(): Observable<MovieGenre[]>;
 }
 
 export const MOVIES_REPOSITORY = new InjectionToken('MoviesRepository');

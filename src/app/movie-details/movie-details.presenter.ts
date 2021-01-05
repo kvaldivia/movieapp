@@ -30,9 +30,11 @@ export class MovieDetailsPresenter extends Presenter {
   }
 
   async getMovieDetails(movieId: string): Promise<void> {
+    await this.showLoading();
     const movie: Movie = await this.moviesRepo
       .getMovieDetails(movieId)
       .toPromise();
     this.page.movie = movie;
+    this.hideLoading();
   }
 }

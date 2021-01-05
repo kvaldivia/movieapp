@@ -9,10 +9,17 @@
 
 <ion-content>
   <div *ngIf="movie" class="info">
-    <ion-text>
+    <ion-img [src]="movie.backdropPath">
+    </ion-img>
+    <ion-text class="movie-title">
       {{ movie.title }}
     </ion-text>
-    <ion-text>
+    <div class="genres">
+      <mojix-tag *ngFor="let genre of movie.genres">
+        {{ genre.name }}
+      </mojix-tag>
+    </div>
+    <ion-text class="movie-overview">
       {{ movie.overview }}
     </ion-text>
   </div>
