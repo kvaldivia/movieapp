@@ -4,7 +4,10 @@ import { LoadingController } from "@ionic/angular";
 import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
 
-import { MoviesRepository, MOVIES_REPOSITORY } from "../../data/repository/contracts/MoviesRepository";
+import {
+  MoviesRepository,
+  MOVIES_REPOSITORY,
+} from "../../data/repository/contracts/MoviesRepository";
 
 import { Presenter } from "../../base.presenter";
 import { PopularMoviesPage } from "./popular-movies.page";
@@ -14,24 +17,28 @@ import { Movie } from "../../domain/entity/Movie";
 @Injectable({
   providedIn: "root",
 })
-export class PopularMoviesPresenter implements Presenter {
+export class PopularMoviesPresenter extends Presenter {
   page: PopularMoviesPage = null;
 
   constructor(
     @Inject(MOVIES_REPOSITORY) public moviesRepo: MoviesRepository,
-    public loadCtrl: LoadingController
-  ) {}
+    loadCtrl: LoadingController
+  ) {
+    super(loadCtrl);
+  }
 
-  bind(page: PopularMoviesPage) {
-    this.page = page;
+  bind(page) {
+    this.page = page as PopularMoviesPage;
   }
 
   async fetchMovies(): Promise<void> {
-    const loader = await this.loadCtrl.create();
-    await loader.present();
-    this.moviesRepo.getMovies().toPromise().then((movies) => {
-      this.page.movies = movies;
-      loader.dismiss();
-    });
+    await this.showLoading();
+    this.moviesRepo
+      .getPopularMovies()
+      .toPromise()
+      .then((movies) => {
+        this.page.movies = movies;
+        this.hideLoading();
+      });
   }
 }

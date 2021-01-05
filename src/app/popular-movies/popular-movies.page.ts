@@ -23,4 +23,9 @@ export class PopularMoviesPage extends BaseComponent {
   ionViewDidEnter() {
     this.presenter.fetchMovies();
   }
+
+  navigateToDetails(movie: Movie) {
+    const destRoute = `movie/${movie.id}/details`;
+    this.navCtrl.navigateForward(destRoute);
+  }
 }
