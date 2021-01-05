@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Movie, MovieGenre } from '../../../domain/entity';
 
 export interface MoviesRepository {
-  getPopularMovies(): Observable<Movie[]>;
+  getPopularMovies(pageNumber?: number): Observable<Movie[]>;
   getMovieDetails(id: string): Observable<Movie>;
   getMovieGenres(): Observable<MovieGenre[]>;
 }

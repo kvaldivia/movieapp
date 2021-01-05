@@ -19,6 +19,12 @@
         </mojix-movie-card>
       </ion-item>
     </ion-list>
+    <ion-infinite-scroll #infiniteScroll threshold="100px" (ionInfinite)="loadData($event)">
+      <ion-infinite-scroll-content
+        loadingSpinner="bubbles"
+        loadingText="Getting more movies">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
   </ng-template>
   <ng-template #empty>
     Omg no movies were found

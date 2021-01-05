@@ -31,13 +31,13 @@ export class PopularMoviesPresenter extends Presenter {
     this.page = page as PopularMoviesPage;
   }
 
-  async fetchMovies(): Promise<void> {
+  async fetchMovies(pageNumber: number): Promise<void> {
     await this.showLoading();
     this.moviesRepo
-      .getPopularMovies()
+      .getPopularMovies(pageNumber)
       .toPromise()
       .then((movies) => {
-        this.page.movies = movies;
+        this.page.movies = [...this.page.movies, ...movies];
         this.hideLoading();
       });
   }
