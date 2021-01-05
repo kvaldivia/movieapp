@@ -14,24 +14,25 @@ import { Movie } from "../../domain/entity/Movie";
 @Injectable({
   providedIn: "root",
 })
-export class PopularMoviesPresenter implements Presenter {
+export class PopularMoviesPresenter extends Presenter {
   page: PopularMoviesPage = null;
 
   constructor(
     @Inject(MOVIES_REPOSITORY) public moviesRepo: MoviesRepository,
-    public loadCtrl: LoadingController
-  ) {}
+    loadCtrl: LoadingController
+  ) {
+    super(loadCtrl);
+  }
 
-  bind(page: PopularMoviesPage) {
-    this.page = page;
+  bind(page) {
+    this.page = page as PopularMoviesPage;
   }
 
   async fetchMovies(): Promise<void> {
-    const loader = await this.loadCtrl.create();
-    await loader.present();
+    await this.showLoading();
     this.moviesRepo.getMovies().toPromise().then((movies) => {
       this.page.movies = movies;
-      loader.dismiss();
+      this.hideLoading();
     });
   }
 }

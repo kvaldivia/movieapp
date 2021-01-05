@@ -1,9 +1,19 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>movie-details</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button>
+      </ion-back-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <div *ngIf="movie" class="info">
+    <ion-text>
+      {{ movie.title }}
+    </ion-text>
+    <ion-text>
+      {{ movie.overview }}
+    </ion-text>
+  </div>
 </ion-content>
