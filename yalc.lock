@@ -2,11 +2,11 @@
   "version": "v1",
   "packages": {
     "mojix-components": {
-      "signature": "aade674113889be6f36fa27fb39bedb7",
+      "signature": "209f1253130f25bb58eeb29b278534df",
       "file": true
     },
     "mojix-components-module": {
-      "signature": "b26b8aae8e860a504fd784a22a0dfb8e",
+      "signature": "3aa8c059103fdbe99709a3400e35fd01",
       "file": true
     }
   }
