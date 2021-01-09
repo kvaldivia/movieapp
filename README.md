@@ -1,17 +1,25 @@
 # movieapp
 
+## Requirements
+
+You should install globally the following libraries:
+
+* ionic
+* @angular/cli
+* capacitor
+* yalc
+
 ## Building
-Run the following commands before building with the ionic cli
 
+### Components
+
+This project (although it is a monorepo) has components isolated from the main app. These components need to be built to be included/updated in the main app. To do so, just run the following command in the root project.
+
+``` bash
+npm run build:components
 ```
-pushd lib/mojix-components && npm install && stencil build && yalc publish && popd
+Then you can try and run the project on an emulator or device with:
 
-pushd lib/mojix-components-module && yalc update && npm install && npm run build && yalc publish && popd
-
-npm install
-```
-
-To run on the android platform:
 ```
 ionic capacitor run android
 ```
