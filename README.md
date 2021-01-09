@@ -18,8 +18,10 @@ This project (although it is a monorepo) has components isolated from the main a
 ``` bash
 npm run build:components
 ```
-Then you can try and run the project on an emulator or device with:
 
-```
+### App
+
+Then you can try and run the project on an emulator or device with:
+``` bash
 ionic capacitor run android
 ```
