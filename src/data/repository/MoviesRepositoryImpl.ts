@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable, from } from "rxjs";
 import { HttpClient, HttpResponse, HttpParams } from "@angular/common/http";
+import { Plugins } from '@capacitor/core';
 
 import { MoviesRepository } from "./contracts/MoviesRepository";
 import {
@@ -27,6 +28,8 @@ import { tap, catchError, map } from "rxjs/operators";
 
 import { environment } from "../../environments/environment";
 
+const { Storage } = Plugins;
+
 @Injectable()
 export class MoviesRepositoryImpl implements MoviesRepository {
   constructor(private http: HttpClient) {}
@@ -34,6 +37,18 @@ export class MoviesRepositoryImpl implements MoviesRepository {
   getPopularMovies(pageNumber: number = 1): Observable<Movie[]> {
     const httpParams = new HttpParams({ fromString: `page=${pageNumber}`});
     return this.http.get(GET_POPULAR_MOVIES_URL, { params: httpParams}).pipe(
+      // this is actually caching the request
+      tap(async (data: MoviesResponseDto) => {
+        Storage.set({
+          key: `${GET_POPULAR_MOVIES_URL}__${pageNumber}`,
+          value: JSON.stringify(data)
+        });
+      }),
+      catchError(async (err, caught) => {
+        const key = `${GET_POPULAR_MOVIES_URL}__${pageNumber}`;
+        const { value }= await Storage.get({ key });
+        return JSON.parse(value);
+      }),
       map((data: MoviesResponseDto) => {
         const movies: Movie[] = data.results.map((elm) => {
           const movie = new Movie();
@@ -57,7 +72,7 @@ export class MoviesRepositoryImpl implements MoviesRepository {
         });
 
         return movies;
-      })
+      }),
     );
   }
 
