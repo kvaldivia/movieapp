@@ -13,7 +13,7 @@
         <mojix-movie-card
           [name]="movie.title"
           [summary]="movie.overview"
-          [genres]="movie.genreIds"
+          [genres]="getGenreNames(movie)"
           [posterUrl]="movie.posterPath"
         >
         </mojix-movie-card>
