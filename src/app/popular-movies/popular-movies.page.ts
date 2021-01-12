@@ -42,4 +42,9 @@ export class PopularMoviesPage extends BaseComponent {
       event.target.disabled = true;
     }, 500);
   }
+
+  getGenreNames(movie: Movie): string[] {
+    const genres = movie.genres.map((genre) => genre.name);
+    return genres !== undefined ? genres : [];
+  }
 }

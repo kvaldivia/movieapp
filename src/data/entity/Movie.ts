@@ -25,6 +25,10 @@ export interface MovieGenreDto {
   name: string;
 }
 
+export interface MovieGenresResponseDto {
+  genres: MovieGenreDto[];
+}
+
 export interface CompanyDto {
   id: number;
   logo_path: string;

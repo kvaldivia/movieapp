@@ -36,8 +36,16 @@ export class PopularMoviesPresenter extends Presenter {
     this.moviesRepo
       .getPopularMovies(pageNumber)
       .toPromise()
-      .then((movies) => {
-        this.page.movies = [...this.page.movies, ...movies];
+      .then((newMovies) => {
+        const movies = [...this.page.movies, ...newMovies];
+        const movieIds = new Set();
+        this.page.movies = movies.filter((movie, idx, arr) => {
+          if (!movieIds.has(movie.id)) {
+            movieIds.add(movie.id);
+            return true;
+          }
+          return false;
+        });
         this.hideLoading();
       });
   }

@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
-import { Observable, from } from "rxjs";
+import { Observable, from, of } from "rxjs";
 import { HttpClient, HttpResponse, HttpParams } from "@angular/common/http";
+import { Plugins } from "@capacitor/core";
 
 import { MoviesRepository } from "./contracts/MoviesRepository";
 import {
@@ -14,6 +15,7 @@ import {
   MoviesResponseDto,
   MovieDetailsResponseDto,
   MovieGenreDto,
+  MovieGenresResponseDto,
   LanguageDto,
   CompanyDto,
   CountryDto,
@@ -23,17 +25,34 @@ import {
   GET_MOVIE_GENRES_URL,
   getMovieDetailsUrl,
 } from "../../net/ApiService";
-import { tap, catchError, map } from "rxjs/operators";
+import { mergeMap, tap, catchError, map, combineAll } from "rxjs/operators";
 
 import { environment } from "../../environments/environment";
+
+const { Storage } = Plugins;
 
 @Injectable()
 export class MoviesRepositoryImpl implements MoviesRepository {
   constructor(private http: HttpClient) {}
 
   getPopularMovies(pageNumber: number = 1): Observable<Movie[]> {
-    const httpParams = new HttpParams({ fromString: `page=${pageNumber}`});
-    return this.http.get(GET_POPULAR_MOVIES_URL, { params: httpParams}).pipe(
+    const httpParams = new HttpParams({ fromString: `page=${pageNumber}` });
+    return this.http.get(GET_POPULAR_MOVIES_URL, { params: httpParams }).pipe(
+      // this is actually caching the request
+      tap(async (data: MoviesResponseDto) => {
+        await Storage.set({
+          key: `${GET_POPULAR_MOVIES_URL}__${pageNumber}`,
+          value: JSON.stringify(data),
+        });
+      }),
+      tap(async (data: MoviesResponseDto) => {
+        await this.getMovieGenres().toPromise();
+      }),
+      catchError(async (err, caught) => {
+        const key = `${GET_POPULAR_MOVIES_URL}__${pageNumber}`;
+        const { value } = await Storage.get({ key });
+        return JSON.parse(value);
+      }),
       map((data: MoviesResponseDto) => {
         const movies: Movie[] = data.results.map((elm) => {
           const movie = new Movie();
@@ -57,7 +76,22 @@ export class MoviesRepositoryImpl implements MoviesRepository {
         });
 
         return movies;
-      })
+      }),
+      mergeMap((incompleteMovies: Movie[]) => {
+        const movies: Observable<Movie>[] = incompleteMovies.map((movie) => {
+          const genres: Observable<MovieGenre>[] = movie.genreIds.map((genreId) => {
+            return this.getMovieGenre(genreId);
+          });
+          return from(genres).pipe(
+            combineAll(),
+            map((genres: MovieGenre[]) => {
+              movie.genres = genres;
+              return movie;
+            })
+          );
+        });
+        return from(movies).pipe(combineAll());
+      }),
     );
   }
 
@@ -96,19 +130,19 @@ export class MoviesRepositoryImpl implements MoviesRepository {
               id: company.id,
               logo_path: company.logoPath,
               name: company.name,
-              origin_country: company.originCountry
+              origin_country: company.originCountry,
             } = comp);
             company.logoPath = `${moviesStaticUrl}${company.logoPath}`;
             return company;
           }
         );
 
-        movie.productionCountries= production_countries.map(
+        movie.productionCountries = production_countries.map(
           (countryData: CountryDto) => {
             const country = new Country();
             ({
               iso_3166_1: country.iso3166_1,
-              name: country.name
+              name: country.name,
             } = countryData);
             return country;
           }
@@ -142,21 +176,43 @@ export class MoviesRepositoryImpl implements MoviesRepository {
 
   getMovieGenres(): Observable<MovieGenre[]> {
     return this.http.get(GET_MOVIE_GENRES_URL, {}).pipe(
-      map((genresData: MovieGenreDto[]) => {
-        const genres: MovieGenre[] = genresData.map((genreData: MovieGenreDto) => {
-          const genre = new MovieGenre();
-          ({
-            id: genre.id,
-            name: genre.name
-          } = genreData);
-          return genre;
+      tap(async (data: MovieGenresResponseDto) => {
+        data.genres.forEach(async (genreData) => {
+          await Storage.set({
+            key: `${GET_MOVIE_GENRES_URL}__${genreData.id}`,
+            value: JSON.stringify(genreData),
+          });
         });
+      }),
+      map((data: MovieGenresResponseDto) => {
+        const genresData = data.genres;
+        const genres: MovieGenre[] = genresData.map(
+          (genreData: MovieGenreDto) => {
+            const genre = new MovieGenre();
+            ({ id: genre.id, name: genre.name } = genreData);
+            return genre;
+          }
+        );
 
         return genres;
       })
     );
   }
 
+  getMovieGenre(id: number): Observable<MovieGenre> {
+    return from(Storage.get({ key: `${GET_MOVIE_GENRES_URL}__${id}` })).pipe(
+      map((data) => {
+        const { value } = data;
+        const genreData = JSON.parse(value);
+        if (!genreData) {
+          return null;
+        }
+        const genre = new MovieGenre();
+        ({ id: genre.id, name: genre.name } = genreData);
+        return genre;
+      })
+    );
+  }
 
   private updateMovieStaticUrls(movie: Movie) {
     const { moviesStaticUrl } = environment;
